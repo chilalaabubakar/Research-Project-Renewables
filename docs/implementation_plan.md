@@ -55,13 +55,15 @@ Each results folder stores a copy of the config used.
 - [ ] Download ERA5 2023 (needs CDS key)
 - [ ] Move the ERA5 point to the Snorre location (Sodir factpages, nearest 0.25° grid point)
 - [ ] Check mean wind speed and capacity factor against published North Sea values
-- [ ] GitHub Actions running pytest
-- [ ] gas_turbine.py
+- [x] GitHub Actions running pytest
+- [x] gas_turbine.py (values for the Snorre units still placeholders)
   - [ ] Turbine types: Snorre setup if public (Equinor, Sodir, Snorre Expansion PDO), otherwise a typical ~30 MW aeroderivative for Case 1 and a smaller unit for Cases 2-4
-  - [ ] Part-load efficiency curve from literature, stored in data/reference/
-  - [ ] Fuel = P/(η·LHV); piecewise linear with no-load term for the MILP
-  - [ ] Minimum stable load, ramp rate, CO2 factor (kg/Sm3) in config with sources
-  - [ ] Tests; plot of efficiency and specific CO2 vs load
+  - [ ] Part-load efficiency curve from literature, stored in data/reference/ (indicative curve in place, needs OEM or peer-reviewed replacement)
+  - [x] Fuel = P/(η·LHV); linear with no-load term (Willans line), same form in the MILP
+  - [x] Minimum stable load, ramp rate in config (placeholders)
+  - [x] CO2 factor and LHV from fuel gas composition (ISO 6976 via NeqSim, carbon balance)
+  - [ ] Snorre fuel gas composition or reported CO2 factor
+  - [x] Tests; plot of efficiency and specific CO2 vs load
 - [ ] Snorre data: production and injection (Sodir), CO2 and fuel gas (norskeutslipp.no), Hywind Tampen figures (Equinor)
 - [ ] Write methods: wind, gas turbine
 
@@ -189,3 +191,6 @@ Figures (generated from saved results):
 | 2026-10-23 | NeqSim for gas side, hand formulas for pumps, literature values for utilities | Single-stage test (10 kg/s associated gas, η_p = 0.75, SRK): hand formula vs NeqSim +2 % at 3→12 bar, +9 % at 30→150 bar, +27 % at 150→400 bar with NeqSim k, M and Z. Gas injection is a large Snorre consumer. Liquids nearly incompressible |
 | 2026-10-23 | NeqSim as core dependency (Java required) | Needed from week 2 |
 | 2026-10-23 | Compressor turndown as minimum-flow power floor | Simple; compressor charts are a Should item |
+| 2026-10-23 | GT fuel model: linear fuel vs power with no-load fraction a (Willans line) | Fits the indicative part-load curve within 1 % from 20 to 100 % load with a = 0.21; maps directly to the MILP without piecewise segments |
+| 2026-10-23 | Fuel gas LHV, Sm3 and CO2 factor computed from composition (ISO 6976 via NeqSim, carbon balance) | Keeps the three consistent. CO2 per GJ varies little with composition, so CO2 results depend mainly on fuel energy. Placeholder composition gives 2.38 kg/Sm3; reported NCS factors 2.34 (old average) to 2.67-2.69 (Edvard Grieg, Yme 2024) |
+| 2026-10-23 | GT ratings 30 MW (Case 1) and 13 MW (Cases 2-4), design efficiency 36 % and 34 %, minimum load 30 % | Placeholders until Snorre turbine data is found; calibrated later against Case 1 validation |

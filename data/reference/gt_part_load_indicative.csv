@@ -1,0 +1,11 @@
+# Indicative gas turbine part-load efficiency (efficiency / design efficiency vs load fraction),
+# constant turbine inlet temperature control.
+# Source: SimTurbo, "Gas Turbine Part Load Efficiency" (blog), https://www.simturbo.net/feeds/blog/gas-turbine-part-load-efficiency
+# LOW RELIABILITY (not peer-reviewed, not OEM). Used only to set the no-load fuel fraction of the
+# linear fuel model until an OEM or peer-reviewed curve is available.
+load_fraction,efficiency_ratio
+1.0,1.000
+0.5,0.826
+0.4,0.762
+0.3,0.676
+0.2,0.538

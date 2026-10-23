@@ -57,6 +57,23 @@ Method:
 Simplifications: constant air density (1.225 kg/m³), same wind at all turbines, hard
 cut-out. Farm size and loss factors in `config/base_case.yaml` are still placeholders.
 
+## Gas turbine module
+
+```bash
+python -m topside.gas_turbine         # fuel gas properties, part-load figure
+```
+
+Fuel energy is linear in power with a no-load term (Willans line):
+F = a·F_rated·on + (1 − a)·F_rated·P/P_rated, with F_rated = P_rated/η_design.
+The no-load fraction a is fitted to a tabulated part-load curve
+(`data/reference/gt_part_load_indicative.csv`). The same two coefficients are used in
+the scheduler.
+
+LHV and standard molar volume of the fuel gas come from NeqSim (ISO 6976), CO2 per
+Sm3 from a carbon balance, all from the composition in the config. Turbine ratings,
+efficiencies, minimum load and the fuel gas composition are placeholders until
+Snorre-specific values are found.
+
 ## Layout
 
 ```

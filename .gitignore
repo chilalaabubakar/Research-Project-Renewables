@@ -10,3 +10,6 @@ data/raw/**
 # Large processed time series
 data/processed/*.csv
 
+
+# Generated figures (recreate with the module scripts)
+results/**/*.png

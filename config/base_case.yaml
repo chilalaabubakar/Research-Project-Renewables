@@ -96,6 +96,78 @@ wind_farm:
     unit: fraction
     source: ASSUMPTION, typical offshore wind technical availability. Replace with a cited value.
 
+fuel_gas:
+  # LHV, standard volume and CO2 per Sm3 are all computed from this composition
+  # (ISO 6976 via NeqSim, carbon balance), so they stay consistent with each other.
+  composition:
+    value: {nitrogen: 0.01, CO2: 0.02, methane: 0.80, ethane: 0.09, propane: 0.05, i-butane: 0.01, n-butane: 0.015, n-pentane: 0.005}
+    unit: mole fraction
+    source: PLACEHOLDER, generic North Sea associated gas. Replace with Snorre fuel gas composition, or tune so the CO2 factor matches the one in the Snorre annual emissions report.
+  reference_temperature:
+    value: 288.15
+    unit: K
+    source: Standard conditions for Sm3 (15 degC, 101.325 kPa), ISO 13443.
+  reference_pressure:
+    value: 101325.0
+    unit: Pa
+    source: Standard conditions for Sm3 (15 degC, 101.325 kPa), ISO 13443.
+  reported_co2_factor_range:
+    value: [2.34, 2.69]
+    unit: kg CO2/Sm3
+    source: "Used only as a sanity check. 2.34 = historical NCS average quoted in SFT reporting guidance, part B (2001), https://www.offshorenorge.no/contentassets/2384ff4e883441afba593ca26570b3e7/utslippsrapportering---del-b.pdf. 2.67 = Edvard Grieg 2024 emissions report (Aker BP), https://akerbp.com/wp-content/uploads/2025/12/edvard-grieg-2024.pdf. 2.69 = Yme 2024 annual report to the Norwegian Environment Agency, https://www.offshorenorge.no/contentassets/39dda802fe004804bdfd32121e6a7c4b/yme-2024.pdf."
+
+gas_turbines:
+  # Fuel model (linear "Willans line"): fuel = a * F_rated * on + (1 - a) * F_rated * P / P_rated,
+  # with F_rated = P_rated / design_efficiency and a = no_load_fuel_fraction.
+  part_load_curve_file:
+    value: data/reference/gt_part_load_indicative.csv
+    unit: "-, -"
+    source: SimTurbo blog curve (low reliability), see file header. Replace with an OEM or peer-reviewed curve.
+  large:
+    name: Large aeroderivative (Case 1)
+    rated_power:
+      value: 30.0e+6
+      unit: W
+      source: PLACEHOLDER, typical ~30 MW class aeroderivative (e.g. LM2500+ class). Replace with the Snorre turbine rating if found.
+    design_efficiency:
+      value: 0.36
+      unit: fraction (LHV basis)
+      source: PLACEHOLDER, simple-cycle efficiency at rated load incl. offshore installation losses. Replace with OEM datasheet value minus installation losses.
+    no_load_fuel_fraction:
+      value: 0.21
+      unit: fraction of rated fuel
+      source: Fitted to the part-load curve in part_load_curve_file (fit within 1 % from 20 to 100 % load). Refit when that curve is replaced.
+    min_load_fraction:
+      value: 0.30
+      unit: fraction of rated power
+      source: PLACEHOLDER, minimum stable load. DLE units are often limited higher for NOx. Replace with a cited value.
+    max_ramp_fraction_per_hour:
+      value: 1.0
+      unit: fraction of rated power per h
+      source: ASSUMPTION, aeroderivatives change load within minutes, so ramping does not limit hourly dispatch.
+  small:
+    name: Small industrial turbine (Cases 2-4)
+    rated_power:
+      value: 13.0e+6
+      unit: W
+      source: PLACEHOLDER, typical ~13 MW class industrial turbine (e.g. SGT-400 class). Size to be set after the demand map.
+    design_efficiency:
+      value: 0.34
+      unit: fraction (LHV basis)
+      source: PLACEHOLDER, see large turbine.
+    no_load_fuel_fraction:
+      value: 0.21
+      unit: fraction of rated fuel
+      source: Same fitted value as the large turbine (no separate curve available).
+    min_load_fraction:
+      value: 0.30
+      unit: fraction of rated power
+      source: PLACEHOLDER, see large turbine.
+    max_ramp_fraction_per_hour:
+      value: 1.0
+      unit: fraction of rated power per h
+      source: ASSUMPTION, see large turbine.
+
 outputs:
   processed_dir:
     value: data/processed

@@ -234,27 +234,11 @@ def summary(ts: pd.DataFrame, cfg: dict) -> dict:
 # 6. Figures
 # --------------------------------------------------------------------------
 
-# Plot colours
-_SERIES = "#2a78d6"
-_SERIES_LIGHT = "#a9c8ee"
-_INK = "#0b0b0b"
-_INK_2 = "#52514e"
-_GRID = "#e4e3df"
-_SURFACE = "#fcfcfb"
+from topside.plotting import INK_2 as _INK_2  # noqa: E402
+from topside.plotting import SERIES, SERIES_LIGHT as _SERIES_LIGHT, SURFACE as _SURFACE  # noqa: E402
+from topside.plotting import style_axes as _style_axes  # noqa: E402
 
-
-def _style_axes(ax):
-    ax.set_facecolor(_SURFACE)
-    ax.grid(True, color=_GRID, linewidth=0.8)
-    ax.set_axisbelow(True)
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    for side in ("left", "bottom"):
-        ax.spines[side].set_color(_INK_2)
-    ax.tick_params(colors=_INK_2)
-    ax.xaxis.label.set_color(_INK_2)
-    ax.yaxis.label.set_color(_INK_2)
-    ax.title.set_color(_INK)
+_SERIES = SERIES[0]
 
 
 def plot_timeseries(ts: pd.DataFrame, cfg: dict, path: Path) -> Path:

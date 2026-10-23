@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "topside"
+version = "0.1.0"
+description = "Energy demand mapping and flexible operation of offshore topside systems under variable renewable power supply"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyyaml",
+    "matplotlib",
+    "xarray",
+    "netCDF4",
+    "cdsapi>=0.7",
+    "pyomo",
+    "highspy",
+    "neqsim",   # needs a Java runtime (JDK 11+); used for the gas side of process.py
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "openpyxl"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

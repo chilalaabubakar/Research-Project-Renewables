@@ -1,0 +1,12 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv/
+.ipynb_checkpoints/
+
+# Downloaded data is re-creatable from the scripts; keep it out of git
+data/raw/**
+!data/raw/.gitkeep
+# Large processed time series
+data/processed/*.csv
+

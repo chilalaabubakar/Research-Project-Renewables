@@ -1,0 +1,107 @@
+# Base case: generic North Sea platform near Tampen, supplied by offshore wind
+# plus a small gas turbine.
+#
+# Every parameter is written as {value, unit, source}. Code reads `value` and
+# works in SI units internally (W, kg, s, Sm3). `source` must cite where the
+# number came from, or say plainly that it is an assumption to be replaced.
+
+site:
+  name: Generic North Sea platform (Tampen area)
+  latitude:
+    value: 61.0
+    unit: deg N
+    source: Project scope (docs/project_brief.md); ERA5 grid point near Tampen. To be moved to Snorre.
+  longitude:
+    value: 2.0
+    unit: deg E
+    source: Project scope (docs/project_brief.md); ERA5 grid point near Tampen. To be moved to Snorre.
+
+era5:
+  year:
+    value: 2023
+    unit: "-"
+    source: Most recent complete, non-leap year (8760 h). Change for inter-annual sensitivity.
+  dataset:
+    value: reanalysis-era5-single-levels
+    unit: "-"
+    source: "Hersbach et al. (2023), ERA5 hourly data on single levels from 1940 to present. Copernicus C3S CDS. doi:10.24381/cds.adbb2d47"
+  variables:
+    value: [100m_u_component_of_wind, 100m_v_component_of_wind, 10m_u_component_of_wind, 10m_v_component_of_wind]
+    unit: m/s
+    source: ERA5 single-level variable names (CDS). 10 m components are only used by the 'era5_profile' shear method.
+  raw_dir:
+    value: data/raw/era5
+    unit: path
+    source: Repo convention.
+
+wind_turbine:
+  name: IEA-15-240-RWT
+  power_curve_file:
+    value: data/reference/IEA-15-240-RWT_power_curve.csv
+    unit: "m/s, MW"
+    source: "Gaertner et al. (2020), Definition of the IEA 15-MW Offshore Reference Wind Turbine, NREL/TP-5000-75698. Data from github.com/IEAWindTask37/IEA-15-240-RWT."
+  rated_power:
+    value: 15.0e+6
+    unit: W
+    source: Gaertner et al. (2020), Table 1.
+  hub_height:
+    value: 150.0
+    unit: m
+    source: Gaertner et al. (2020), Table 1.
+  cut_in_speed:
+    value: 3.0
+    unit: m/s
+    source: Gaertner et al. (2020), Table 1.
+  cut_out_speed:
+    value: 25.0
+    unit: m/s
+    source: Gaertner et al. (2020), Table 1.
+
+wind_shear:
+  # How to move ERA5 100 m wind up to hub height.
+  #   power_law    : U_hub = U_100 * (z_hub / 100)^alpha, with fixed alpha below
+  #   era5_profile : alpha computed every hour from ERA5 10 m and 100 m winds
+  method:
+    value: power_law
+    unit: "-"
+    source: Modelling choice; see README 'Wind module'.
+  alpha:
+    value: 0.14
+    unit: "-"
+    source: "IEC 61400-3-1:2019, normal wind profile for offshore sites (power-law exponent 0.14)."
+  alpha_bounds:
+    value: [0.0, 0.4]
+    unit: "-"
+    source: Assumption. Clips hourly alpha in 'era5_profile' mode to avoid unphysical extrapolation in very stable or unstable hours.
+  reference_height:
+    value: 100.0
+    unit: m
+    source: ERA5 100 m wind level.
+
+wind_farm:
+  n_turbines:
+    value: 4
+    unit: "-"
+    source: "PLACEHOLDER (60 MW). To be sized against the platform demand from process.py, and varied in the sensitivity study. For scale: Hywind Tampen is 11 x 8.6 MW = 88 MW for Snorre + Gullfaks."
+  wake_loss:
+    value: 0.05
+    unit: fraction
+    source: ASSUMPTION, typical for a small (few-turbine) farm. Replace with a cited value or a wake model.
+  electrical_loss:
+    value: 0.02
+    unit: fraction
+    source: ASSUMPTION, array cable + export cable to platform. Replace with a cited value.
+  availability:
+    value: 0.95
+    unit: fraction
+    source: ASSUMPTION, typical offshore wind technical availability. Replace with a cited value.
+
+outputs:
+  processed_dir:
+    value: data/processed
+    unit: path
+    source: Repo convention.
+  figure_dir:
+    value: results/figures
+    unit: path
+    source: Repo convention.
